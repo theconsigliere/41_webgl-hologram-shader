@@ -41,15 +41,26 @@ void main()
 
   //fallof
   // fade out edges
-   float falloff = smoothstep(0.8, 0.0, fresnel);
+
+  //  COURSE CODE
+  //  float falloff = smoothstep(0.8, 0.0, fresnel);
+
+// MY CODE
+  float falloff = fresnel;
 
 
   // Holographic
   float holographic = stripes * fresnel;
   // make holographic effect more visible
-  holographic += fresnel * 1.25;
+  //course code
+// holographic += fresnel * 1.25;
+
+ // MY CODE
+  holographic += fresnel * 1.05;
   // fade out edges
-  holographic *= falloff;
+
+  // COURSE CODE
+ // holographic *= falloff;
 
 
 

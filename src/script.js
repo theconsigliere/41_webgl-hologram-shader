@@ -13,8 +13,9 @@ const gui = new GUI()
 
 const config = {
   uAmountOfStripes: 20.0,
-  uSpeedOfStripes: 1.0,
+  uSpeedOfStripes: 5.0,
   uColour: new THREE.Color("#8fd2ff"),
+  clearColor: "#324ad2",
 }
 
 // add unifrom
@@ -83,7 +84,11 @@ const camera = new THREE.PerspectiveCamera(
   0.1,
   100
 )
-camera.position.set(7, 7, 7)
+// COURSE CODE
+//camera.position.set(7, 7, 7)
+
+camera.position.set(7, 3, 15)
+
 scene.add(camera)
 
 // Controls
@@ -93,19 +98,17 @@ controls.enableDamping = true
 /**
  * Renderer
  */
-const rendererParameters = {}
-rendererParameters.clearColor = "#1d1f2a"
 
 const renderer = new THREE.WebGLRenderer({
   canvas: canvas,
   antialias: true,
 })
-renderer.setClearColor(rendererParameters.clearColor)
+renderer.setClearColor(config.clearColor)
 renderer.setSize(sizes.width, sizes.height)
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
 
-gui.addColor(rendererParameters, "clearColor").onChange(() => {
-  renderer.setClearColor(rendererParameters.clearColor)
+gui.addColor(config, "clearColor").onChange(() => {
+  renderer.setClearColor(config.clearColor)
 })
 
 /**
@@ -129,26 +132,40 @@ const material = new THREE.ShaderMaterial({
  * Objects
  */
 // Torus knot
-const torusKnot = new THREE.Mesh(
-  new THREE.TorusKnotGeometry(0.6, 0.25, 128, 32),
-  material
-)
-torusKnot.position.x = 3
-scene.add(torusKnot)
+let torusKnot = null
+// torusKnot = new THREE.Mesh(
+//   new THREE.TorusKnotGeometry(0.6, 0.25, 128, 32),
+//   material
+// )
+// torusKnot.position.x = 3
+// scene.add(torusKnot)
 
 // Sphere
-const sphere = new THREE.Mesh(new THREE.SphereGeometry(), material)
-sphere.position.x = -3
-scene.add(sphere)
+let sphere = null
+// sphere = new THREE.Mesh(new THREE.SphereGeometry(), material)
+// sphere.position.x = -3
+// scene.add(sphere)
 
 // Suzanne
 let suzanne = null
-gltfLoader.load("./suzanne.glb", (gltf) => {
-  suzanne = gltf.scene
-  suzanne.traverse((child) => {
+// gltfLoader.load("./suzanne.glb", (gltf) => {
+//   suzanne = gltf.scene
+//   suzanne.traverse((child) => {
+//     if (child.isMesh) child.material = material
+//   })
+//   scene.add(suzanne)
+// })
+
+let mxkLogo = null
+gltfLoader.load("./mxk-logo.glb", (gltf) => {
+  mxkLogo = gltf.scene
+  mxkLogo.traverse((child) => {
     if (child.isMesh) child.material = material
   })
-  scene.add(suzanne)
+
+  mxkLogo.scale.set(0.35, 0.35, 0.35)
+  mxkLogo.rotation.x = Math.PI / 2
+  scene.add(mxkLogo)
 })
 
 /**
@@ -168,11 +185,19 @@ const tick = () => {
     suzanne.rotation.y = elapsedTime * 0.2
   }
 
-  sphere.rotation.x = -elapsedTime * 0.1
-  sphere.rotation.y = elapsedTime * 0.2
+  if (mxkLogo) {
+    mxkLogo.rotation.z = -elapsedTime * 0.25
+  }
 
-  torusKnot.rotation.x = -elapsedTime * 0.1
-  torusKnot.rotation.y = elapsedTime * 0.2
+  if (sphere) {
+    sphere.rotation.x = -elapsedTime * 0.1
+    sphere.rotation.y = elapsedTime * 0.2
+  }
+
+  if (torusKnot) {
+    torusKnot.rotation.x = -elapsedTime * 0.1
+    torusKnot.rotation.y = elapsedTime * 0.2
+  }
 
   // Update controls
   controls.update()
